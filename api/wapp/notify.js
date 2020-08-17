@@ -7,7 +7,12 @@ module.exports = async (req, res) => {
   }
 
   return got
-    .post(`https://api.telegram.org/${BOT_ID}/sendMessage`)
+    .post(`https://api.telegram.org/${process.env.BOT_ID}/sendMessage`, {
+      json: {
+        chat_id: `@${process.env.USERNAME}`,
+        text: 'Whatsapp Notification on Burner',
+      },
+    })
     .then((_) => {
       return res.end();
     })
