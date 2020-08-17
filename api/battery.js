@@ -7,11 +7,20 @@ export default async (req, res) => {
       return res.end();
     }
 
+    const { status } = req.query;
+
+    if (!isValidStatus(status)) {
+      res.status(400);
+      return res.send({
+        error: 'Invalid Status',
+      });
+    }
+
     const { BOT_ID, USERNAME } = process.env;
 
     await axios.post(`https://api.telegram.org/bot${BOT_ID}/sendMessage`, {
       chat_id: `${USERNAME}`,
-      text: 'Burner Notif\nWhatsapp Notification on Burner',
+      text: `Burner Notif\nBattery Status: ${status.toUpperCase()}`,
     });
 
     return res.send({
@@ -25,3 +34,8 @@ export default async (req, res) => {
     });
   }
 };
+
+function isValidStatus(status) {
+  const valids = ['low', 'charged'];
+  return valids.indexOf(status.toLowerCase()) > -1;
+}
