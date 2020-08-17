@@ -1,22 +1,26 @@
-const got = require('got');
+const axios = require('axios');
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
   if (req.method !== 'GET') {
     res.status(404);
     return res.end();
   }
 
-  return got
-    .post(`https://api.telegram.org/${process.env.BOT_ID}/sendMessage`, {
-      json: {
-        chat_id: `@${process.env.USERNAME}`,
-        text: 'Whatsapp Notification on Burner',
-      },
+  const { BOT_ID, USERNAME } = process.env;
+
+  axios
+    .post(`https://api.telegram.org/bot${BOT_ID}/sendMessage`, {
+      chat_id: `${USERNAME}`,
+      text: 'Whatsapp Notification on Burner',
     })
     .then((_) => {
-      return res.end();
+      return res.send({
+        done: true,
+      });
     })
     .catch((err) => {
       console.error(err);
+      res.status(400);
+      return res.end();
     });
 };
